@@ -1,3 +1,12 @@
+## 4.1.1
+
+RP Basic 完善：
+
+- 优化默认角色扮演模板与系统提示词
+- 完善 FetchLorebook 工具描述
+- 新增 `{{time}}` / `{{date}}` 宏
+- 新增 / 修正 `lastUserMessage` 宏
+
 ## 4.0.0 [release]
 
 从能用，向好用迈进！
