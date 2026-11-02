@@ -1,3 +1,14 @@
+## 4.1.3
+
+新增插件「Gemini RP 缓存优化 (OpenRouter)」（`plugins/rp_gemini_cache`）：
+
+- 自动识别 OpenRouter 上的 Gemini 模型（`google/gemini*`，端点含 openrouter.ai 或密钥为 `sk-or-`）
+- 显式缓存断点（设置 → 供应商 → [Gemini缓存]）：关闭 / 系统前缀 / 前缀+历史；可选 1 小时 TTL
+- 合并开头连续 system 消息，使系统提示、角色卡、世界书常驻内容成为单一稳定前缀
+- 可选 OpenRouter 响应缓存 `X-OpenRouter-Cache: true`
+- 回复后 Toast 显示缓存命中/写入 token；`/gcache` 查看累计命中率与前缀变化原因（如 `{{time}}` 宏）
+- 核心新增 `COMPLETION_PAYLOAD_HOOKS` / `USAGE_HOOKS` 插件钩子（`src/api-request.js`）
+
 ## 4.1.2
 
 RP 模板首条消息自动生成角色卡：

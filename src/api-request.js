@@ -1319,6 +1319,12 @@ async function buildCompletionPayload(
 	const additionalBody = config.additionalBody;
 	if (additionalBody) Object.assign(body, additionalBody);
 
+	// 插件钩子：在请求体最终序列化前修改 body / headers（如 OpenRouter Gemini 缓存优化）
+	for (const hook of COMPLETION_PAYLOAD_HOOKS) {
+		try { await hook(body, headers, {config, conversation, url: config.endpoint}); }
+		catch (e) { console.error("[payload hook]", e); }
+	}
+
 	block:
 	if (config.antiSlop) {
 		if (!context.retry) {showToast("这个调用不支持AntiSlop采样"); break block;}
@@ -1390,6 +1396,17 @@ async function buildCompletionPayload(
 		assistantMessage
 	};
 }
+
+/**
+ * 插件钩子：请求体构造完成、序列化之前调用
+ * @type {Array<function(Object, Object, {config: Object, conversation: AiChat.Conversation, url: string}): (void|Promise<void>)>}
+ */
+export const COMPLETION_PAYLOAD_HOOKS = [];
+/**
+ * 插件钩子：解析到 usage 时调用
+ * @type {Array<function(Object, AiChat.BillingLog, Object): void>}
+ */
+export const USAGE_HOOKS = [];
 
 const isThinkingEnabled = (config) => (typeof config.forceThink === "boolean" ? config.forceThink : config.think);
 
@@ -1512,6 +1529,10 @@ const extractUsageMetrics = (json, log) => {
 		if (cost) {
 			log.cost = Math.round(cost * LLM_COST_SCALE);
 			log.currency = "USD";
+		}
+
+		for (const hook of USAGE_HOOKS) {
+			try { hook(usage, log, json); } catch (e) { console.error("[usage hook]", e); }
 		}
 
 		return total_tokens;

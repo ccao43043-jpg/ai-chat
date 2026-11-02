@@ -170,6 +170,14 @@ if (DB_MODE !== "local") {
 	});
 }
 
+// 追加在末尾以保持已保存的插件索引不变
+pluginDefinitions.push({
+	name: "Gemini RP 缓存优化 (OpenRouter)",
+	description: "自动识别 OpenRouter 上的 Gemini 模型：为系统提示/角色卡/世界书常驻前缀添加 cache_control 断点，可选响应缓存，显示缓存命中。设置位于「供应商」页 [Gemini缓存]，使用 /gcache 查看状态。",
+	defaultEnabled: true,
+	load: () => import("./rp_gemini_cache/GeminiCache.js")
+});
+
 const pluginOrder = (config.pluginOrder?.map(i => pluginDefinitions[i])  || pluginDefinitions.map(item => item.defaultEnabled&&item)).filter(Boolean);
 
 const orderedItems = new Set(pluginOrder);
