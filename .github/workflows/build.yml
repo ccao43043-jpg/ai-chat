@@ -32,6 +32,8 @@ jobs:
         with:
           path: packages/unconscious
           repository: roj234/unconscious
+          # 2.0.0 起 monorepo 拆包，工作区 packages/* 无法直接解析；钉在 1.45.1
+          ref: e4bcddf390facece0c52321730f82893b5e73a69
 
       - name: Checkout streaming-markdown
         uses: actions/checkout@v6

@@ -53,6 +53,8 @@ import {LorebookMatcher} from "./LorebookMatcher.js";
 import {createFileSystemAsync, createVirtualFileSystem} from "../agent/index.js";
 import {NestedMap} from "unconscious/common/NestedMap.js";
 import {PROMISE_CATCH} from "/common/pure-utils.js";
+import {submitUserChatMessage} from "/src/api-request.js";
+import {registerAutoGenerateCharacter} from "./autoGenerateCharacter.js";
 
 import {closeWindow, openWindow} from "/src/components/Windows.jsx";
 import {Icon_save} from "/src/components/Icons.jsx";
@@ -666,6 +668,15 @@ onConversationSwitchOut((conv) => {
 	delete conv[FIRST_LOAD];
 });
 onConversationLoaded((conv, path, messages) => loadRPConversation(conv, messages, true));
+
+// RP 模板首条消息 → 确认后自动生成角色卡
+registerAutoGenerateCharacter({
+	currentPreset,
+	currentCharacter,
+	characterList,
+	loadRPConversation,
+	submitUserChatMessage,
+});
 
 //region 数据导入
 /**
